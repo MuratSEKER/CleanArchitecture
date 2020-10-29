@@ -2,26 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <UserSecretsId>aspnet-CleanArch.Mvc-F08098FC-A416-47E6-B96A-4E78B0FA97BD</UserSecretsId>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
-
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="7.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
-
 
   <ItemGroup>
     <ProjectReference Include="..\CleanArch.Infra.IoC\CleanArch.Infra.IoC.csproj" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

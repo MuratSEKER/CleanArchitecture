@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using CleanArch.Mvc.Data;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using CleanArch.Infra.Data.Context;
+﻿using CleanArch.Infra.Data.Context;
 using CleanArch.Infra.IoC;
 using MediatR;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Swagger;
 
-namespace CleanArch.Mvc
+namespace CleanArch.Api
 {
     public class Startup
     {
@@ -31,20 +23,6 @@ namespace CleanArch.Mvc
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("UniversityIdentityDBConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddDefaultUI(UIFramework.Bootstrap4)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-
             services.AddDbContext<UniversityDBContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("UniversityDBConnection"));
@@ -52,6 +30,11 @@ namespace CleanArch.Mvc
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "University Api", Version = "v1" });
+            });
+           
             services.AddMediatR(typeof(Startup));
 
             RegisterServices(services);
@@ -63,27 +46,21 @@ namespace CleanArch.Mvc
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseCookiePolicy();
 
-            app.UseAuthentication();
-
-            app.UseMvc(routes =>
+            app.UseSwagger();
+            app.UseSwaggerUI(s =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                s.SwaggerEndpoint("/swagger/v1/swagger.json", "University Api V1");
             });
+            app.UseMvc();
         }
 
         private static void RegisterServices(IServiceCollection services)
