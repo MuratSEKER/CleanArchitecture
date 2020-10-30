@@ -1,9 +1,7 @@
 ﻿using CleanArch.Domain.Interfaces;
 using CleanArch.Domain.Models;
 using CleanArch.Infra.Data.Context;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace CleanArch.Infra.Data.Repositories
 {
@@ -21,7 +19,7 @@ namespace CleanArch.Infra.Data.Repositories
             context.Add(course);
         }
 
-        public IEnumerable<Course> GetCourses()
+        public IQueryable<Course> GetCourses()
         {
             return context.Courses;
         }
